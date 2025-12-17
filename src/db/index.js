@@ -1,7 +1,6 @@
 import mysql from 'mysql2/promise'
 import fs from 'fs'
 
-
 //connect mysql database
 
 const connectDB = async () => {
