@@ -33,21 +33,34 @@ const createUser = async(userData)=>{
 
 const findAll = async () => {
     const [rows] = await pool.query('SELECT * FROM users');
+    console.log(rows)
     return rows;
 }
 
 
-const findById = async () => {
-
+const findById = async (id) => {
+    const [result] = await pool.query(`SELECT * FROM users WHERE id = ?`,[id])
+    return result
 }
 
-const findOne = async (email,username)=>{
-    const connection = await pool.query()
+const findOneUser = async (email,username)=>{
+    //we can use if condition to check which one is passed
+    const [result] = await pool.query(`SELECT * FROM users WHERE email = ? OR username = ?`,[email,username])
+    console.log(result)
+    return result;
+}
 
+
+const updateUserRefreshToken = async (userId,refreshToken)=>{
+    const [result] = await pool.query(`UPDATE users SET refreshToken = ? WHERE id = ? `,[refreshToken,userId])
+    return result
 }
 
 
 export {
     createUser,
-    findAll
+    findAll,
+    findOneUser,
+    updateUserRefreshToken,
+    findById
 }
