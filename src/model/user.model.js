@@ -22,13 +22,13 @@ import pool from "../db/index.js";
 // createTable()
 
 
-const createUser = async(userData)=>{
-    const {username,email,fullName,password,avatar} = userData;
+const createUser = async (userData) => {
+    const { username, email, fullName, password, avatar } = userData;
     const [result] = await pool.query(`
-        INSERT INTO users(username,email,fullName,password,avatar) values(?,?,?,?,?)`,[username,email,fullName,password,avatar])
+        INSERT INTO users(username,email,fullName,password,avatar) values(?,?,?,?,?)`, [username, email, fullName, password, avatar])
     console.log(result)
     return result.insertId;
-    
+
 }
 
 const findAll = async () => {
@@ -39,22 +39,33 @@ const findAll = async () => {
 
 
 const findById = async (id) => {
-    const [result] = await pool.query(`SELECT * FROM users WHERE id = ?`,[id])
-    return result
+    const [result] = await pool.query(`SELECT * FROM users WHERE id = ?`, [id])
+    return result[0]
 }
 
-const findOneUser = async (email,username)=>{
+const findByIdNoPassAndRefToken = async (id) => {
+    const [result] = await pool.query(`SELECT id,username,email,fullName,avatar,createdAt FROM users WHERE id = ?`, [id])
+    return result[0]
+}
+
+const findOneUser = async (email, username) => {
     //we can use if condition to check which one is passed
-    const [result] = await pool.query(`SELECT * FROM users WHERE email = ? OR username = ?`,[email,username])
+    const [result] = await pool.query(`SELECT * FROM users WHERE email = ? OR username = ?`, [email, username])
     console.log(result)
     return result;
 }
 
 
-const updateUserRefreshToken = async (userId,refreshToken)=>{
-    const [result] = await pool.query(`UPDATE users SET refreshToken = ? WHERE id = ? `,[refreshToken,userId])
+const updateUserRefreshToken = async (userId, refreshToken) => {
+    if (refreshToken === null) {
+        const [result] = await pool.query(`UPDATE users SET refreshToken = NULL WHERE id = ? `, [userId])
+        return result
+    }
+    const [result] = await pool.query(`UPDATE users SET refreshToken = ? WHERE id = ? `, [refreshToken, userId])
     return result
 }
+
+
 
 
 export {
@@ -62,5 +73,6 @@ export {
     findAll,
     findOneUser,
     updateUserRefreshToken,
-    findById
+    findById,
+    findByIdNoPassAndRefToken
 }

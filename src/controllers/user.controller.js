@@ -21,8 +21,6 @@ const generateAccessAndRefreshToken = (user)=>{
     }
 }
 
-
-
 const registerUser = asyncHandler(async (req, res) => {
     const { username, fullName, email, password } = req.body
 
@@ -118,9 +116,26 @@ const getAllUsers = asyncHandler(async (req, res) => {
         )
 })
 
+const logoutUser = asyncHandler(async(req,res)=>{
+    await updateUserRefreshToken(req.user.id,null)
+    const options = {
+        httpOnly:true,
+        secure:process.env.NODE_ENV === "production"
+
+    }
+
+    return res
+        .status(200)
+        .clearCookie("accessToken",options)
+        .clearCookie("refreshToken",options)
+        .json(
+            new ApiResponse(201,{},"Logged out successFully")
+        )
+})
 
 export {
     registerUser,
     loginUser,
-    getAllUsers
+    getAllUsers,
+    logoutUser
 }
