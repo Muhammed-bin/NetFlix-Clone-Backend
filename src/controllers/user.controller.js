@@ -117,6 +117,14 @@ const getAllUsers = asyncHandler(async (req, res) => {
         )
 })
 
+const getCurrentUser = asyncHandler( async(req,res)=>{
+    return res
+            .status(201)
+            .json(
+                new ApiResponse(201,req.user,"Current user fetched Successfully")
+            )
+}) 
+
 const logoutUser = asyncHandler(async(req,res)=>{
     await updateUserRefreshToken(req.user.id,null)
     const options = {
@@ -172,10 +180,13 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
     }
 }) 
 
+
+
 export {
     registerUser,
     loginUser,
     getAllUsers,
     logoutUser,
-    refreshAccessToken
+    refreshAccessToken,
+    getCurrentUser
 }
