@@ -1,4 +1,5 @@
 import pool from "../db/index.js";
+import { ApiError } from "../utils/ApiError.js";
 // const createTable = async () => {
 //     const connection = await connectDB()
 
@@ -56,6 +57,8 @@ const findOneUser = async (email, username) => {
 }
 
 
+
+
 const updateUserRefreshToken = async (userId, refreshToken) => {
     if (refreshToken === null) {
         const [result] = await pool.query(`UPDATE users SET refreshToken = NULL WHERE id = ? `, [userId])
@@ -63,6 +66,21 @@ const updateUserRefreshToken = async (userId, refreshToken) => {
     }
     const [result] = await pool.query(`UPDATE users SET refreshToken = ? WHERE id = ? `, [refreshToken, userId])
     return result
+}
+
+
+const findByIdAndUpdateUserDetails = async(userId,updateData)=>{
+    const {username,fullName,email} = updateData
+
+    const [updateResult] = await pool.query(`UPDATE users set username = ?, fullName = ?, email = ? WHERE id = ?`,[username,fullName,email,userId])
+
+    if(!updateResult){
+        throw new ApiError(500,"unable to update user details")
+    }
+
+    const result = await pool.query(`SELECT id,username,email,fullName,avatar,createdAt,updatedAt FROM users WHERE id = ?`,[userId])
+
+    return [result[0]]
 }
 
 
@@ -74,5 +92,6 @@ export {
     findOneUser,
     updateUserRefreshToken,
     findById,
-    findByIdNoPassAndRefToken
+    findByIdNoPassAndRefToken,
+    findByIdAndUpdateUserDetails
 }

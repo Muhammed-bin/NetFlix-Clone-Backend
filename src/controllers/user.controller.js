@@ -1,4 +1,4 @@
-import { createUser, findAll, findById, findOneUser, updateUserRefreshToken } from "../model/user.model.js";
+import { createUser, findAll, findById, findByIdAndUpdateUserDetails, findOneUser, updateUserRefreshToken } from "../model/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -181,6 +181,56 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
 }) 
 
 
+const updateUserDetails = asyncHandler(async(req,res)=>{
+    const {username,email,fullName} = req.body
+
+    if([username,email,fullName].some((field)=>field.trim() === "" || !field)){
+        throw new ApiError(400,"All fields are required")
+    }
+
+    if(username !== req.user?.username){
+        const existedUser = await findOneUser(undefined,username)// passing undefined because we already used 2 parameter in the findOne user function we can change it in future
+        if(existedUser){
+            throw new ApiError(400,"username already taken")
+        }
+
+
+    }
+
+    if(email !== req.user?.email){
+        const existedUser = await findOneUser(email,undefined)
+        if(existedUser){
+            throw new ApiError(400,"email already taken")
+        }
+    }
+
+    const updatedUser = await findByIdAndUpdateUserDetails(req.user.id,{username,fullName,email})
+    console.log(updatedUser)
+
+    if(!updatedUser){
+        throw new ApiError(500,"unable to update user details")
+    }
+    
+
+
+    return res
+            .status(201)
+            .json(
+                new ApiResponse(201,updatedUser,"User details updated successfully")
+            )
+
+
+})
+
+const changeCurrentPassword = asyncHandler(async(req,res)=>{
+
+})
+
+const updateAvatar = asyncHandler(async(req,res)=>{
+
+})
+
+
 
 export {
     registerUser,
@@ -188,5 +238,6 @@ export {
     getAllUsers,
     logoutUser,
     refreshAccessToken,
-    getCurrentUser
+    getCurrentUser,
+    updateUserDetails
 }
