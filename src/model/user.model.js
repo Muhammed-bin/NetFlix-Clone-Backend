@@ -83,6 +83,10 @@ const findByIdAndUpdateUserDetails = async(userId,updateData)=>{
     return [result[0]]
 }
 
+const updatePassword = async(id,newPassword)=>{
+    const [result] = await pool.query(`UPDATE users SET password =? WHERE id=?`,[newPassword,id])
+    return result
+}
 
 
 
@@ -93,5 +97,6 @@ export {
     updateUserRefreshToken,
     findById,
     findByIdNoPassAndRefToken,
-    findByIdAndUpdateUserDetails
+    findByIdAndUpdateUserDetails,
+    updatePassword
 }

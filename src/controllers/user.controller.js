@@ -1,4 +1,4 @@
-import { createUser, findAll, findById, findByIdAndUpdateUserDetails, findOneUser, updateUserRefreshToken } from "../model/user.model.js";
+import { createUser, findAll, findById, findByIdAndUpdateUserDetails, findOneUser, updatePassword, updateUserRefreshToken } from "../model/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -223,6 +223,33 @@ const updateUserDetails = asyncHandler(async(req,res)=>{
 })
 
 const changeCurrentPassword = asyncHandler(async(req,res)=>{
+    const {password,newPassword} = req.body
+
+    if(!password || !newPassword){
+        throw new ApiError(400,"Old password and new password are required")
+    }
+
+    const user = await findById(req.user?.id)
+    if(!user){
+        throw new ApiError(400,"User Not Found")
+    }
+
+    const validatePassword = await bcryptjs.compare(password,user?.password)
+
+    if(!validatePassword){
+        throw new ApiError(400,"Incorrect password")
+    }
+
+    const hashedNewPassword = await bcryptjs.hash(newPassword,10)
+
+    await updatePassword(user.id,hashedNewPassword)
+
+    return res
+            .status(201)
+            .json(
+                new ApiResponse(201,{},"Password Updated Succesfully")
+            )
+
 
 })
 
@@ -239,5 +266,6 @@ export {
     logoutUser,
     refreshAccessToken,
     getCurrentUser,
-    updateUserDetails
+    updateUserDetails,
+    changeCurrentPassword
 }
