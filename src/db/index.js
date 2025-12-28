@@ -17,6 +17,7 @@ const pool = mysql.createPool({
     queueLimit: 0
 })
 
+
 console.log("MySql connected Successfully")
 
 export default pool;

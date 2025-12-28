@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 
@@ -16,10 +17,12 @@ app.use(cookieParser())
 
 //import routes
 import userRoutes from './routes/user.routes.js'
-import cookieParser from 'cookie-parser'
+import videoRoutes from './routes/video.routes.js'
+
 
 
 app.use("/api/v1/users",userRoutes)
+app.use("/api/v1/videos",videoRoutes)
 
 
 
