@@ -1,4 +1,4 @@
-import { uploadVideoToDB } from "../model/video.models.js";
+import { getVideosFromDB, uploadVideoToDB } from "../model/video.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -61,7 +61,20 @@ const uploadVideo = asyncHandler(async (req,res)=>{
 })
 
 const getAllVideos = asyncHandler(async(req,res)=>{
-    
+    const {page=1,limit=10,query} = req.query;
+    console.log(page,limit,query)
+
+    const videos = await getVideosFromDB({page,limit,query})
+
+    if(!videos){
+        throw new ApiError(500,"unable to fetch videos")
+    }
+
+    return res
+            .status(201)
+            .json(
+                new ApiResponse(201,videos,"videos fetched successfully")
+            )
 })
 
 const getVideo = asyncHandler(async(req,res)=>{
@@ -86,5 +99,6 @@ const togglePublishStatus = asyncHandler(async(req,res)=>{
 
 export {
     updateVideo,
-    uploadVideo
+    uploadVideo,
+    getAllVideos
 }

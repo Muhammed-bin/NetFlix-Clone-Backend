@@ -21,9 +21,29 @@ const getVideoById = async(videoId)=>{
     return result[0]
 }
 
+const getVideosFromDB = async({page,limit,query})=>{
+    page = parseInt(page) || 1
+    limit = parseInt(limit) || 10
+    const offset = limit * (page - 1)
 
+    let whereClause = ""
+    let values = []
 
-export {uploadVideoToDB}
+    if(query){
+        whereClause = `WHERE title LIKE ? OR description LIKE ?`
+        values.push(`%${query}%`,`%${query}`)
+    }
+
+    const [results] = await pool.query(
+        `SELECT * FROM videos 
+        ${whereClause}
+        ORDER BY createdAt DESC 
+        LIMIT ? OFFSET ?`
+        ,[...values,parseInt(limit),parseInt(offset)])
+    return results
+}
+ 
+export {uploadVideoToDB,getVideosFromDB}
 
 
 
