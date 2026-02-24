@@ -18,9 +18,10 @@ const checkIsLikedVideo = async (data) => {
 
 
 const getVideoLikeCount = async (id) => {
-    const [result] = await pool.query(`SELECT COUNT(*) AS like_count
-                                        FROM likes
-                                    WHERE videoId = ?;`, [id])
+    const [result] = await pool.query(`
+        SELECT COUNT(*) AS like_count
+        FROM likes
+        WHERE videoId = ?;`, [id])
 
     return result[0]
 

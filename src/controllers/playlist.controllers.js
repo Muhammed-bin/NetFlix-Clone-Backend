@@ -80,6 +80,14 @@ const deletePlaylist = asyncHandler(async(req,res)=>{
 
 })
 
+// const changeVideoPosition = asyncHandler(async(req,res)=>{
+//     const {playlistId,videoId} = req.params
+//     const {newPosition} = req.body
+
+
+// })
+
+
 export {
     createPlayList,
     addVideoToPlayList,

@@ -119,8 +119,27 @@ const increamentViewCount = asyncHandler(async(req,res)=>{
 
 
 const updateVideo = asyncHandler(async(req,res)=>{
+    const {id} = req.params;
+    const {title,description} = req.body;
 
-})
+    if(!title?.trim() && !description?.trim()){
+        throw new ApiError(400,"Please make any changes to update ")
+    }
+
+    const updateData = {}
+
+    if(title.trim()) updateData.title = title
+    if(description.trim()) updateData.description = description
+
+    const upadted = await updateVideoInDB({
+        id,
+        title,
+        description
+    })
+
+    console.log(upadted)
+
+ })
 
 const deleteVideo = asyncHandler(async(req,res)=>{
 

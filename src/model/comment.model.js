@@ -28,27 +28,27 @@ export {getByIdAndAddComment,getAllCommentsByVideoId}
 
 
 
-await pool.query(`CREATE TABLE comments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    content TEXT NOT NULL,
+// await pool.query(`CREATE TABLE comments (
+//     id INT AUTO_INCREMENT PRIMARY KEY,
+//     content TEXT NOT NULL,
 
-    owner INT NOT NULL,
-    video INT NOT NULL,
+//     owner INT NOT NULL,
+//     video INT NOT NULL,
 
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+//     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_comments_owner
-        FOREIGN KEY (owner)
-        REFERENCES users(id)
-        ON DELETE CASCADE,
+//     CONSTRAINT fk_comments_owner
+//         FOREIGN KEY (owner)
+//         REFERENCES users(id)
+//         ON DELETE CASCADE,
 
-    CONSTRAINT fk_comments_video
-        FOREIGN KEY (video)
-        REFERENCES videos(id)
-        ON DELETE CASCADE,
+//     CONSTRAINT fk_comments_video
+//         FOREIGN KEY (video)
+//         REFERENCES videos(id)
+//         ON DELETE CASCADE,
 
-    INDEX idx_comments_owner (owner),
-    INDEX idx_comments_video (video)
-) ENGINE=InnoDB;
-`)
+//     INDEX idx_comments_owner (owner),
+//     INDEX idx_comments_video (video)
+// ) ENGINE=InnoDB;
+// `)

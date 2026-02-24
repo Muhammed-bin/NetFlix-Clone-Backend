@@ -57,6 +57,59 @@ const increamentVideoViewInDB = async(videoId)=>{
     return results
 }
 
+const updateVideoInDB = async(videoData)=>{
+     try {
+        // Build dynamic query based on provided fields
+        const updates = [];
+        const values = [];
+
+        if (title !== undefined) {
+            updates.push('title = ?');
+            values.push(title);
+        }
+
+        if (description !== undefined) {
+            updates.push('description = ?');
+            values.push(description);
+        }
+
+        // If no fields to update
+        if (updates.length === 0) {
+            return null;
+        }
+
+        // updatedAt is handled automatically by ON UPDATE CURRENT_TIMESTAMP
+        // Add id as the last parameter for WHERE clause
+        values.push(id);
+
+        const query = `
+            UPDATE videos 
+            SET ${updates.join(', ')} 
+            WHERE id = ?
+        `;
+
+        const [result] = await pool.execute(query, values);
+
+        // Check if any row was affected
+        if (result.affectedRows === 0) {
+            return null;
+        }
+
+        // Fetch and return the updated video
+        const [rows] = await pool.execute(
+            'SELECT * FROM videos WHERE id = ?',
+            [id]
+        );
+
+        return rows[0];
+
+    } catch (error) {
+        console.error('Error updating video:', error);
+        throw error;
+    }
+
+}
+
 export { uploadVideoToDB, getVideosFromDB, getVideoById,increamentVideoViewInDB }
 
 
